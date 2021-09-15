@@ -14,18 +14,25 @@ public class GameState {
   // final version, it will use various values that the fightingICE 
   // program can provide and other standard values used for mcts
   // but for basic testing of mcts and NN a basic value
-  // that is easier to produce and guess what it will do
+  // that is easier to produce and guess what it will do will be used
+  // alongside the usual visit count and win count
   */
   private int prototype;
+  private double visitCount;
+  private double winCount;
   
   public GameState() {
     prototype = 1;
+    visitCount = 0;
+    winCount = 0;
   }
   public GameState(int prototype) {
     this.prototype = prototype;
     if(prototype == 0) {
       prototype = 1;
     }
+    visitCount = 0;
+    winCount = 0;
   }
   
   public int getGameState() {
@@ -34,5 +41,21 @@ public class GameState {
   
   public void setGameState(int prototype) {
     this.prototype = prototype;
+  }
+  
+  public double getVisitCount() {
+    return visitCount;
+  }
+  
+  public void setVisitCount(double visitCount) {
+    this.visitCount = visitCount;
+  }
+  
+  public double getWinCount() {
+    return winCount;
+  }
+  
+  public void setWinCount(double winCount) {
+    this.winCount = winCount;
   }
 }

@@ -1,0 +1,15 @@
+Project: developing an AI for fighting games
+
+Goal: to develop an AI intended for use in fighting games that can be trained against other
+AIs and have its skill correlate to how well it was trained (effectively how good the AI opponent it
+trained against was). This will be accomplished with the use of a version of the Monte Carlo Tree Search engine
+and a Neural Network
+
+Author: Jordon Zeigler
+Advisor for project: Professor Girard
+
+Note: A program known as fightingICE will be used in this project to help facilitate training the AI
+in a fighting game environment. Due to its size the program itself will not be available on the repository but 
+instead I will provide a link website for the program as well as links for other resources as they are used
+
+https://www.ice.ci.ritsumei.ac.jp/~ftgaic/index.htm
