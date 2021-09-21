@@ -11,7 +11,7 @@ public class UCT {
     return (nodeWins/nodeVisits)+1.00*Math.sqrt(Math.log(parentVisits)/nodeVisits);
   }
   
-  public Node BestUCTNode(Node node) {
+  public static Node BestUCTNode(Node node) {
     double parentVisits = node.state.getVisitCount();
     double currentHighest = 0;
     Node selectedNode = null;

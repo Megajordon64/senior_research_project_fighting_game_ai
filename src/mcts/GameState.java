@@ -1,5 +1,8 @@
 package mcts;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * a class that will hold all the information of a current state of the game to use
  * in determining what move to perform
@@ -35,11 +38,11 @@ public class GameState {
     winCount = 0;
   }
   
-  public int getGameState() {
+  public int getGameStateValue() {
     return prototype;
   }
   
-  public void setGameState(int prototype) {
+  public void setGameStateValue(int prototype) {
     this.prototype = prototype;
   }
   
@@ -57,5 +60,26 @@ public class GameState {
   
   public void setWinCount(double winCount) {
     this.winCount = winCount;
+  }
+  
+  // will be updated later to accept state info from fightingICE
+  public List<GameState> getPossibleStates(int numStates){
+    List<GameState> possibleStates = new ArrayList<>();
+    
+    for(int i = 0; i < numStates; i++) {
+      GameState state = new GameState(i+2);
+      possibleStates.add(state);
+    }
+    
+    return possibleStates;
+    
+  }
+  
+  public void increaseVisitCount() {
+    visitCount++;
+  }
+  
+  public void increaseWinCount() {
+    winCount++;
   }
 }

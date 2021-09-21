@@ -60,12 +60,13 @@ public class Node {
     return children.get((int) Math.random() * children.size());
   }
   
+  // rework new version to use visitCount
   public Node findBestChildNode() {
     int nodePosition = 1;
     int currentHighest = 0;
     for(int i = 1; i <= children.size(); i++) {
-      if(children.get(i).state.getGameState() > currentHighest) {
-        currentHighest = children.get(i).state.getGameState();
+      if(children.get(i).state.getGameStateValue() > currentHighest) {
+        currentHighest = children.get(i).state.getGameStateValue();
         nodePosition = i;
       }
     }

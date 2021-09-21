@@ -6,7 +6,7 @@ trained against was). This will be accomplished with the use of a version of the
 and a Neural Network
 
 Author: Jordon Zeigler
-Advisor for project: Professor Girard
+Advisor for project: Dr. Girard
 
 Note: A program known as fightingICE will be used in this project to help facilitate training the AI
 in a fighting game environment. Due to its size the program itself will not be available on the repository but 
