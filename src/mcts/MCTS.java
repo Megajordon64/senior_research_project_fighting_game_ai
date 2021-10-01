@@ -105,14 +105,15 @@ public class MCTS {
   }
   
   // this method will represent the backpropagation phase
-  public void backProp(Node start) {
+  public void backProp(Node start, int result) {
     Node bottom = start;
     while (bottom != null) {
       bottom.getGameState().increaseVisitCount();
-      if (bottom.getGameState().getGameStateValue() == 10)
+      if (bottom.getGameState().getGameStateValue() == 10 || result == 10)
           bottom.getGameState().increaseWinCount();
       bottom = bottom.getParentNode();
   }
   
   
+}
 }

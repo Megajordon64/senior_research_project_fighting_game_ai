@@ -4,7 +4,7 @@ import java.util.List;
 
 public class UCT {
   
-  public double getUCTValue(double nodeWins, double nodeVisits, double parentVisits) {
+  public static double getUCTValue(double nodeWins, double nodeVisits, double parentVisits) {
     if(nodeVisits == 0) {
       return 100;
     }

@@ -14,7 +14,7 @@ import java.util.List;
 public class Node {
   GameState state;
   Node parent;
-  List<Node> children;
+  public List<Node> children;
   
   public Node() {
     this.state = new GameState();
