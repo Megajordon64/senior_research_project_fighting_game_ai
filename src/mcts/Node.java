@@ -19,11 +19,13 @@ public class Node {
   public Node() {
     this.state = new GameState();
     children = new ArrayList<Node>();
+    parent = null;
   }
   
   public Node(GameState state) {
     this.state = state;
     children = new ArrayList<Node>();
+    parent = null;
   }
   
   public Node(GameState state, Node parent, List<Node> children) {
@@ -62,10 +64,10 @@ public class Node {
   
   // rework new version to use visitCount
   public Node findBestChildNode() {
-    int nodePosition = 1;
+    int nodePosition = 0;
     int currentHighest = 0;
-    for(int i = 1; i <= children.size(); i++) {
-      if(children.get(i).state.getGameStateValue() > currentHighest) {
+    for(int i = 1; i < children.size(); i++) {
+      if(children.get(i).state.getGameStateValue() > currentHighest && children.get(i).state.getGameStateValue() < 11) {
         currentHighest = children.get(i).state.getGameStateValue();
         nodePosition = i;
       }

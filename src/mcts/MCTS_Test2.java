@@ -7,29 +7,30 @@ package mcts;
 
 import java.util.List;
 
-public class MCTS {
+public class MCTS_Test2 {
   
-  Node start;
-  private int timer = 500;
+  Node start; 
+  // timer will not be used in test version
+  // private int timer = 500;
   Tree tree;
   int numExpansions;
   
   // constructors for use depending on whether we have or another tree we want it 
   // to start with, rather than starting from scratch
-  public MCTS() {
+  public MCTS_Test2() {
     start = new Node();
-    numExpansions = 10;
+    numExpansions = 5;
   };
   
-  public MCTS(Node start) {
+  public MCTS_Test2(Node start) {
     this.start = start;
-    numExpansions = 10;
+    numExpansions = 5;
   }
   
-  public MCTS(Tree tree) {
+  public MCTS_Test2(Tree tree) {
     this.tree = tree;
     start = tree.getRoot();
-    numExpansions = 10;
+    numExpansions = 5;
   }
   
   public int getNumExpansions() {
@@ -42,9 +43,10 @@ public class MCTS {
   
   // this method will later be updated to return the game state returned by various functions found within
   // fightingICE, for right now it will just return the prototype value for testing purposes
-  public int selectBestMove(GameState state) {
-    
-    long timeLimit = System.currentTimeMillis() + timer;
+  public int selectBestMove(GameState state, int test) {
+    // new int that will limit number of run throughs that the select Best move method will have for its loop for testing purposes 
+    int testingLimit = test;
+    //long timeLimit = System.currentTimeMillis() + timer;
     if (tree == null) {
       tree = new Tree(start);
     }
@@ -52,10 +54,13 @@ public class MCTS {
       tree.getRoot().setGameState(state);
     }
     
-    while (System.currentTimeMillis() < timeLimit) {
+    for(int i = 0; i < testingLimit; i++) {
       
       Node selectedNode = selectNode(tree.getRoot());
       
+      if(i == 1) {
+        setNumExpansions(10);
+      }
       // using 0 and 10 as temporary signifiers of end state of the game
       if (selectedNode.getGameState().getGameStateValue() != 0 &&
           selectedNode.getGameState().getGameStateValue() != 10) {

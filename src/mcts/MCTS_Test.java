@@ -7,26 +7,27 @@ package mcts;
 
 import java.util.List;
 
-public class MCTS {
+public class MCTS_Test {
   
-  Node start;
-  private int timer = 500;
-  Tree tree;
+  Node start; 
+  // timer will not be used in test version
+  // private int timer = 500;
+  public Tree tree;
   int numExpansions;
   
   // constructors for use depending on whether we have or another tree we want it 
   // to start with, rather than starting from scratch
-  public MCTS() {
+  public MCTS_Test() {
     start = new Node();
     numExpansions = 10;
   };
   
-  public MCTS(Node start) {
+  public MCTS_Test(Node start) {
     this.start = start;
     numExpansions = 10;
   }
   
-  public MCTS(Tree tree) {
+  public MCTS_Test(Tree tree) {
     this.tree = tree;
     start = tree.getRoot();
     numExpansions = 10;
@@ -42,9 +43,10 @@ public class MCTS {
   
   // this method will later be updated to return the game state returned by various functions found within
   // fightingICE, for right now it will just return the prototype value for testing purposes
-  public int selectBestMove(GameState state) {
-    
-    long timeLimit = System.currentTimeMillis() + timer;
+  public int selectBestMove(GameState state, int test) {
+    // new int that will limit number of run throughs that the select Best move method will have for its loop for testing purposes 
+    int testingLimit = test;
+    //long timeLimit = System.currentTimeMillis() + timer;
     if (tree == null) {
       tree = new Tree(start);
     }
@@ -52,7 +54,7 @@ public class MCTS {
       tree.getRoot().setGameState(state);
     }
     
-    while (System.currentTimeMillis() < timeLimit) {
+    for(int i = 0; i < testingLimit; i++) {
       
       Node selectedNode = selectNode(tree.getRoot());
       
@@ -64,9 +66,9 @@ public class MCTS {
       
       Node simNode = selectedNode;
       
-      if(selectedNode.getChildren().size() > 0) {
-        simNode = selectedNode.getRandomChild();
-      }
+      //if(selectedNode.getChildren().size() > 0) {
+      //  simNode = selectedNode.getRandomChild();
+      //}
       
       int result = simulateRandomState(simNode);
       
@@ -93,6 +95,7 @@ public class MCTS {
     
     for(int i = 0; i < states.size(); i++) {
       Node leafNode = new Node(states.get(i));
+      node.children.add(leafNode);
       leafNode.setParentNode(node);
     }
   }
