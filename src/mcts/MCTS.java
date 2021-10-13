@@ -64,10 +64,6 @@ public class MCTS {
       
       Node simNode = selectedNode;
       
-      if(selectedNode.getChildren().size() > 0) {
-        simNode = selectedNode.getRandomChild();
-      }
-      
       int result = simulateRandomState(simNode);
       
       backProp(simNode, result);
@@ -93,6 +89,7 @@ public class MCTS {
     
     for(int i = 0; i < states.size(); i++) {
       Node leafNode = new Node(states.get(i));
+      node.children.add(leafNode);
       leafNode.setParentNode(node);
     }
   }
