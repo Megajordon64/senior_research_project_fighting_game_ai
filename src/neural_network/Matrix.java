@@ -53,4 +53,97 @@ public class Matrix {
     
     return newMatrix;
   }
+  
+  public static Matrix transpose(Matrix matrix) {
+    Matrix newMatrix = new Matrix(matrix.rows, matrix.cols);
+    for(int i = 0; i < matrix.rows; i++)
+    {
+        for(int j = 0; j < matrix.cols; j++)
+        {
+            newMatrix.data[j][i] = matrix.data[i][j];
+        }
+    }
+    return newMatrix;
+  }
+  
+  public static Matrix multiply(Matrix matrix1, Matrix matrix2) {
+    Matrix newMatrix = new Matrix(matrix1.rows, matrix2.cols);
+    for(int i = 0; i < newMatrix.rows; i++)
+    {
+        for(int j = 0; j < newMatrix.cols; j++)
+        {
+            double sum=0;
+            for(int k = 0; k < matrix1.cols; k++)
+            {
+                sum = sum + (matrix1.data[i][k] * matrix2.data[k][j]);
+            }
+            newMatrix.data[i][j] = sum;
+        }
+    }
+    return newMatrix;
+  }
+  
+  public void multiply(Matrix matrix) {
+    for(int i = 0; i < matrix.rows; i++)
+    {
+        for(int j = 0; j < matrix.cols;j++)
+        {
+            data[i][j] = data[i][j] * matrix.data[i][j];
+        }
+    }
+    
+  }
+  
+  public void multiply(double scalar) {
+    for(int i = 0; i < rows; i++)
+    {
+        for(int j = 0; j < cols; j++)
+        {
+            data[i][j] = data[i][j] * scalar;
+        }
+    }
+    
+  }
+  
+  public void sigmoid() {
+    for(int i = 0; i < rows; i++)
+    {
+        for(int j = 0; j < cols; j++)
+            data[i][j] = 1/(1+Math.exp(-data[i][j])); 
+    }
+    
+  }
+  
+  public Matrix dsigmoid() {
+    Matrix newMatrix = new Matrix(rows,cols);
+    for(int i=0; i<rows; i++)
+    {
+        for(int j = 0; j < cols; j++)
+            newMatrix.data[i][j] = data[i][j] * (1-data[i][j]);
+    }
+    return newMatrix;
+    
+  }
+  
+  public static Matrix fromArray(double[] source)
+  {
+      Matrix newMatrix = new Matrix(source.length,1);
+      for(int i = 0; i < source.length; i++)
+          newMatrix.data[i][0] = source[i];
+      return newMatrix;
+      
+  }
+  
+  public double[] toArray() {
+    double[] newArray = new double[rows * cols]  ;
+    
+    for(int i = 0;i < rows; i++)
+    {
+        for(int j = 0; j < cols;j ++)
+        {
+            newArray[(i*j) -1] = data[i][j];
+        }
+    }
+    return newArray;
+}
 }
