@@ -1,4 +1,4 @@
-package mcts;
+package mctsPrototype;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,26 +20,31 @@ public class GameState {
   // that is easier to produce and guess what it will do will be used
   // alongside the usual visit count and win count
   */
+  private int prototype;
   private double visitCount;
   private double winCount;
   
   public GameState() {
+    prototype = 1;
     visitCount = 0;
     winCount = 0;
   }
-  //public GameState() {
-    
-    //visitCount = 0;
-    //winCount = 0;
-  //}
+  public GameState(int prototype) {
+    this.prototype = prototype;
+    if(prototype == 0) {
+      prototype = 1;
+    }
+    visitCount = 0;
+    winCount = 0;
+  }
   
-  //public int getGameStateValue() {
-   // return prototype;
-  //}
+  public int getGameStateValue() {
+    return prototype;
+  }
   
-  //public void setGameStateValue(int prototype) {
-  //  this.prototype = prototype;
-  //}
+  public void setGameStateValue(int prototype) {
+    this.prototype = prototype;
+  }
   
   public double getVisitCount() {
     return visitCount;
@@ -58,15 +63,15 @@ public class GameState {
   }
   
   // will be updated later to accept state info from fightingICE
-  //public List<GameState> getPossibleStates(int numStates){
-    //List<GameState> possibleStates = new ArrayList<>();
+  public List<GameState> getPossibleStates(int numStates){
+    List<GameState> possibleStates = new ArrayList<>();
     
-    //for(int i = 0; i < numStates; i++) {
-      //GameState state = new GameState(i+2);
-      //possibleStates.add(state);
-    //}
+    for(int i = 0; i < numStates; i++) {
+      GameState state = new GameState(i+2);
+      possibleStates.add(state);
+    }
     
-    //return possibleStates;
+    return possibleStates;
     
   }
   

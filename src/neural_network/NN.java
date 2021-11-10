@@ -2,6 +2,12 @@ package neural_network;
 
 // code for neural network package referenced from:
 // towarddatascience.com
+import aiinterface.CommandCenter;
+import enumerate.Action;
+import simulator.Simulator;
+import struct.CharacterData;
+import struct.FrameData;
+import struct.GameData;
 public class NN {
   
   Matrix weights_input_hidden;
