@@ -23,29 +23,29 @@ public class Node {
   GameState state;
   Node parent;
   public List<Node> children;
-  private List<Action> myActions;
+   List<Action> myActions;
 
-  private List<Action> oppActions;
+   List<Action> oppActions;
 
-  private Simulator simulator;
+  Simulator simulator;
 
-  private List<Action> selectedMyActions;
+   List<Action> selectedMyActions;
 
-  private int myOriginalHp;
+   int myOriginalHp;
 
-  private int oppOriginalHp;
-  private int games;
+   int oppOriginalHp;
+   int games;
   
-  private Random rnd;
-  private int depth;
-  private FrameData frameData;
-  private boolean playerNumber;
-  private CommandCenter commandCenter;
-  private GameData gameData;
+   Random rnd;
+   int depth;
+  FrameData frameData;
+   boolean playerNumber;
+   CommandCenter commandCenter;
+   GameData gameData;
   public static final int SIMULATION_TIME = 60;
 
 
-  private boolean isCreateNode;
+  boolean isCreateNode;
 
   Deque<Action> mAction;
   Deque<Action> oppAction;
@@ -89,12 +89,6 @@ public class Node {
     }
   }
   
-  public Node() {
-    this.state = new GameState();
-    children = new ArrayList<Node>();
-    parent = null;
-  }
-  
   public Node(GameState state) {
     this.state = state;
     children = new ArrayList<Node>();
@@ -131,6 +125,13 @@ public class Node {
     this.children = children;
   }
   
+  public List<Action> getPossibleActions(){
+    return myActions;
+  }
+  
+  public List<Action> getMySelectedActions(){
+    return selectedMyActions;
+  }
   public Node getRandomChild() {
     return children.get((int) Math.random() * children.size());
   }
@@ -172,6 +173,23 @@ public class Node {
   
   public int getScore(FrameData fd) {
     return (fd.getCharacter(playerNumber).getHp() - myOriginalHp) - (fd.getCharacter(!playerNumber).getHp() - oppOriginalHp);
+  }
+  
+  public Action getBestScoreAction() {
+
+    int selected = -1;
+    double bestScore = -9999;
+
+    for (int i = 0; i < children.size(); i++) {
+
+      double meanScore = children.get(i).getScore(children.get(i).frameData) / children.get(i).games;
+      if (bestScore < meanScore) {
+        bestScore = meanScore;
+        selected = i;
+      }
+    }
+
+    return this.myActions.get(selected);
   }
   
   

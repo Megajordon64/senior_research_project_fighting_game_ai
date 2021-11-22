@@ -15,7 +15,6 @@ public class NN {
   Matrix bias_hidden; 
   Matrix bias_output;    
   double learning_rate=0.1;
-  Action bestAction;
   
   public NN(int input, int hidden, int output) {
     weights_input_hidden = new Matrix(hidden, input);
@@ -85,10 +84,6 @@ public class NN {
           int sampleN =  (int)(Math.random() * x.length );
           this.train(x[sampleN], y[sampleN]);
       }
-  }
-  
-  public Action returnBestAction() {
-    return bestAction; 
   }
   
 }

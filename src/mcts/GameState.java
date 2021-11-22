@@ -2,6 +2,16 @@ package mcts;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.Random;
+import aiinterface.CommandCenter;
+import enumerate.Action;
+import simulator.Simulator;
+import struct.CharacterData;
+import struct.FrameData;
+import struct.GameData;
+
 
 /**
  * a class that will hold all the information of a current state of the game to use
@@ -22,10 +32,15 @@ public class GameState {
   */
   private double visitCount;
   private double winCount;
+  private FrameData frameData;
+  private GameData gameData;
   
-  public GameState() {
+  public GameState(FrameData fd, GameData gd) {
     visitCount = 0;
     winCount = 0;
+    frameData = fd;
+    gameData = gd;
+
   }
   //public GameState() {
     
@@ -57,6 +72,22 @@ public class GameState {
     this.winCount = winCount;
   }
   
+  public void setFD(FrameData fd) {
+    frameData = fd;
+  }
+  
+  public void setGD(GameData gd) {
+    gameData = gd;
+  }
+  
+  public FrameData getFD() {
+    return frameData;
+  }
+  
+  public GameData getGD() {
+    return gameData;
+  }
+  
   // will be updated later to accept state info from fightingICE
   //public List<GameState> getPossibleStates(int numStates){
     //List<GameState> possibleStates = new ArrayList<>();
@@ -68,7 +99,7 @@ public class GameState {
     
     //return possibleStates;
     
-  }
+  
   
   public void increaseVisitCount() {
     visitCount++;
