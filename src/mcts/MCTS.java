@@ -78,7 +78,7 @@ public class MCTS {
     numExpansions = 10;
   }
   
-  public MCTS(GameData gameData, boolean playerNumber, Node start) {
+  public MCTS(GameData gameData, boolean playerNumber) {
     this.playerNumber = playerNumber;
     this.gameData = gameData;
 

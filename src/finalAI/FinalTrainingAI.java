@@ -1,4 +1,5 @@
 package finalAI;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -20,8 +21,9 @@ public class FinalTrainingAI implements AIInterface{
   private Simulator simulator;
   private Key key;
   private CommandCenter commandCenter;
-  private boolean playerNumber;
-  private GameData gameData;
+  public static boolean playerNumber;
+  public static GameData gameData;
+  public static MCTS mcts;
   
   /** Main FrameData */
   private FrameData frameData;
@@ -74,9 +76,10 @@ public class FinalTrainingAI implements AIInterface{
   }
 
   @Override
-  public void getInformation(FrameData arg0, boolean arg1) {
+  public void getInformation(FrameData frameData, boolean playerNumber) {
     this.frameData = frameData;
     this.commandCenter.setFrameData(this.frameData, playerNumber);
+    mcts.retrieveInformation(frameData);
 
     myCharacter = frameData.getCharacter(playerNumber);
     oppCharacter = frameData.getCharacter(!playerNumber);
@@ -84,9 +87,9 @@ public class FinalTrainingAI implements AIInterface{
   }
 
   @Override
-  public int initialize(GameData arg0, boolean arg1) {
-    this.playerNumber = playerNumber;
-    this.gameData = gameData;
+  public int initialize(GameData gameData, boolean playerNumber) {
+    FinalTrainingAI.playerNumber = playerNumber;
+    FinalTrainingAI.gameData = gameData;
 
     this.key = new Key();
     this.frameData = new FrameData();
@@ -107,8 +110,8 @@ public class FinalTrainingAI implements AIInterface{
         Action.STAND_F_D_DFA, Action.STAND_F_D_DFB, Action.STAND_D_DB_BB };
     spSkill = Action.STAND_D_DF_FC;
 
-    myMotion = gameData.getMotionData(this.playerNumber);
-    oppMotion = gameData.getMotionData(!this.playerNumber);
+    myMotion = gameData.getMotionData(playerNumber);
+    oppMotion = gameData.getMotionData(!playerNumber);
 
     return 0;
   }
@@ -129,6 +132,11 @@ public class FinalTrainingAI implements AIInterface{
   public void roundEnd(int arg0, int arg1, int arg2) {
     // TODO Auto-generated method stub
     
+  }
+  
+  public static void main(String[] args) throws FileNotFoundException {
+    
+    mcts = new MCTS(gameData, playerNumber);
   }
 
 }
