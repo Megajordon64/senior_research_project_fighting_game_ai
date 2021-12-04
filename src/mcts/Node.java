@@ -34,7 +34,7 @@ public class Node {
    int myOriginalHp;
 
    int oppOriginalHp;
-   int games;
+   int games = 1;
   
    Random rnd;
    int depth;
@@ -63,10 +63,12 @@ public class Node {
       List<Action> oppActions, GameData gameData, boolean playerNumber,
       CommandCenter commandCenter) {
     this.frameData = frameData;
+    this.state.setFD(frameData);
     this.parent = parent;
     this.myActions = myActions;
     this.oppActions = oppActions;
     this.gameData = gameData;
+    this.state.setGD(gameData);
     this.simulator = new Simulator(gameData);
     this.playerNumber = playerNumber;
     this.commandCenter = commandCenter;
@@ -138,14 +140,17 @@ public class Node {
   
   // rework new version to use visitCount
   public Node findBestChildNode() {
-    int nodePosition = 0;
-    int currentHighest = 0;
+    Node currentNode = children.get(0);
+    double currentScore = currentNode.playout();
     for(int i = 1; i < children.size(); i++) {
-       i++;
+      double compare = children.get(i).playout();
+      if(compare > currentScore) {
+        currentNode = children.get(i);
+        currentScore = currentNode.playout();
       }
+    }
+    return currentNode;
     
-    
-    return children.get(nodePosition);
   }
   
   public double playout() {

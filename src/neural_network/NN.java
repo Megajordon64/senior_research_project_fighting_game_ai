@@ -1,13 +1,6 @@
 package neural_network;
 
-// code for neural network package referenced from:
-// towarddatascience.com
-import aiinterface.CommandCenter;
 import enumerate.Action;
-import simulator.Simulator;
-import struct.CharacterData;
-import struct.FrameData;
-import struct.GameData;
 public class NN {
   
   Matrix weights_input_hidden;
@@ -23,6 +16,22 @@ public class NN {
     
     bias_hidden = new Matrix(hidden, 1);
     bias_output = new Matrix(output, 1);
+  }
+  
+  public Matrix getWIH() {
+    return weights_input_hidden;
+  }
+  
+  public Matrix getWHO() {
+    return weights_hidden_output;
+  }
+  
+  public Matrix getBH() {
+    return bias_hidden;
+  }
+  
+  public Matrix getBO() {
+    return bias_output;
   }
   
   public double[] predict(double[] x)

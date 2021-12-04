@@ -10,11 +10,7 @@ package mcts;
 public class Tree {
   Node Root;
   Node Current;
-  
-  public Tree() {
-    Root = new Node();
-  }
-  
+ 
   public Tree(Node Root) {
     this.Root = Root;
   }

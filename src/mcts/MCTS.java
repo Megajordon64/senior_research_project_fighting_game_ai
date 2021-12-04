@@ -1,8 +1,5 @@
 package mcts;
 // code for mcts package referenced from:
-
-
-
 // https://www.baeldung.com/java-monte-carlo-tree-search
 // https://github.com/eugenp/tutorials/tree/master/algorithms-searching/src/main/java/com/baeldung/algorithms/mcts
 // https://www.ice.ci.ritsumei.ac.jp/~ftgaic/index-2h.html
@@ -14,7 +11,6 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import aiinterface.AIInterface;
 import aiinterface.CommandCenter;
 import enumerate.Action;
 import enumerate.State;
@@ -35,6 +31,10 @@ public class MCTS {
 
 
   /** Main FrameData */
+  public LinkedList<TrainingExample> trainingExample;
+  public LinkedList<TrainingExample> oppTrainingExample;
+  
+  public int listTracker = 0;
   private FrameData frameData;
   
   private FrameData simulatorAheadFrameData;
@@ -60,7 +60,7 @@ public class MCTS {
   private Action spSkill;
   
   Node start;
-  private int timer = 500;
+  private int timer = 100;
   Tree tree;
   int numExpansions;
   
@@ -104,7 +104,7 @@ public class MCTS {
     myMotion = gameData.getMotionData(this.playerNumber);
     oppMotion = gameData.getMotionData(!this.playerNumber);
     
-    numExpansions = 10;
+    numExpansions = 1;
 
   }
   
@@ -118,17 +118,19 @@ public class MCTS {
   
   // this method will later be updated to return the game state returned by various functions found within
   // fightingICE, for right now it will just return the prototype value for testing purposes
-  public Action selectBestMove(GameState state) {
-    
+  public Action selectBestMove(FrameData fd) {
+    trainingExample.clear();
     long timeLimit = System.currentTimeMillis() + timer;
     if (tree == null) {
       tree = new Tree(start);
     }
-    if (rootNode.getGameState() != state) {
-      rootNode.setGameState(state);
+    if (rootNode.getGameState().getFD() != fd) {
+      tree = new Tree(start);
+      rootNode.setGameState(new GameState(fd, gameData));
     }
     
-    while (System.currentTimeMillis() < timeLimit) {
+    int j = 0;
+    while (System.currentTimeMillis() < timeLimit && j < numExpansions) {
       
       Node selectedNode = selectNode(tree.getRoot());
       
@@ -140,11 +142,25 @@ public class MCTS {
       double result = simulateRandomState(simNode);
       
       backProp(simNode, result);
+      j++;
       
     }
     
-    Node finalSelection = tree.getRoot().findBestChildNode();
+    Node Selection = tree.getRoot();
+    Node finalSelection = Selection.findBestChildNode();
+    trainingExample.add(new TrainingExample(frameData));
+    trainingExample.getLast().setAction(finalSelection.getBestScoreAction());
     return finalSelection.getBestScoreAction();
+  }
+  
+  public Node selectNodeVer2(Node start) {
+    Node node = start;
+    
+    while (node.getChildren().size() != 0) {
+      trainingExample.add(new TrainingExample(frameData));
+      node = UCT.BestUCTNode(node);
+    }
+    return node;
   }
   
   // this method refers to the selection phase of mcts
@@ -161,7 +177,7 @@ public class MCTS {
   public void expandNode(Node node) {
     List<Action> states = node.getPossibleActions();
     
-    for(int i = 0; i < states.size(); i++) {
+    for(int i = listTracker; i < states.size() + listTracker; i++) {
 
         LinkedList<Action> my = new LinkedList<Action>();
         for (Action act : node.getMySelectedActions()) {
@@ -170,7 +186,7 @@ public class MCTS {
 
       my.add(myActions.get(i));
       Node leafNode = new Node(node.frameData, node, node.myActions, node.oppActions, 
-          node.gameData, node.playerNumber, node.commandCenter, node.getMySelectedActions());
+          node.gameData, node.playerNumber, node.commandCenter, my);
       node.children.add(leafNode);
       leafNode.setParentNode(node);
     }
@@ -183,6 +199,7 @@ public class MCTS {
     return bestChildNode.playout();
   }
   
+  // may be considered obsolete due to mcts being used only having depth of 1 and resetting each time
   // this method will represent the backpropagation phase
   public void backProp(Node start, double result) {
     Node bottom = start;
@@ -223,7 +240,7 @@ public class MCTS {
         start = rootNode;
         expandNode(start);
 
-        Action bestAction = selectBestMove(start.getGameState()); 
+        Action bestAction = selectBestMove(start.getGameState().getFD()); 
 
         commandCenter.commandCall(bestAction.name()); 
       }
@@ -298,5 +315,13 @@ public class MCTS {
         }
       }
     }
+  }
+  
+  public LinkedList<TrainingExample> getTrainingExamples(){
+    return trainingExample;
+  }
+  
+  public LinkedList<TrainingExample> getOppTrainingExamples(){
+    return oppTrainingExample;
   }
 }
