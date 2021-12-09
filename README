@@ -41,4 +41,6 @@ the play count option, as the latter doesn't work correctly with the training AI
 you may edit the ROUND_FRAME_NUMBER variable to change the time limit (i don't know why changing the ROUND_TIME variable
 doesn't give the same effect, but it does let you go into negative time which does have some minor affect on the neural networks)
 
+WARNING: finalTrainingAI has been shown to crash occassionally, not currently 100% certain why, but currently
+it seems more likely to occur if a draw occurs
  
