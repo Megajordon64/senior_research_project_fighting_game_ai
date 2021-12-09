@@ -1,11 +1,11 @@
 
 import java.io.File;
-
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import aiinterface.AIInterface;
 import aiinterface.CommandCenter;
@@ -131,7 +131,12 @@ public class FinalTrainingAI implements AIInterface{
      double[] output = new double[40];
      for(int j = 0; j < 40; j++) {
        if(trainingExample.get(i).getAction() == AllActions[j]) {
-         output[j] = 1.0;
+         if(trainingExample.get(i).getResult() == 1) {
+           output[j] = 1.0;
+         }
+         else{
+           output[j] = -1.0;
+         }
        }
        else {
          output[j] = 0.0;
@@ -144,7 +149,12 @@ public class FinalTrainingAI implements AIInterface{
      double[] output = new double[40];
      for(int j = 0; j < 40; j++) {
        if(oppTrainingExample.get(i).getAction() == AllActions[j]) {
-         output[j] = 1.0;
+         if(oppTrainingExample.get(i).getResult() == 1) {
+           output[j] = 1.0;
+         }
+         else{
+           output[j] = -1.0;
+         }
        }
        else {
          output[j] = 0.0;
@@ -154,6 +164,7 @@ public class FinalTrainingAI implements AIInterface{
    }
    
    File neural_net_setup = new File("NN_setup");
+   System.out.println("file: " + neural_net_setup.getAbsolutePath());
    
    try {
     neural_net_setup.createNewFile();
@@ -165,33 +176,33 @@ public class FinalTrainingAI implements AIInterface{
    
    try {
     FileWriter NN_writer = new FileWriter("NN_setup");
-    double[] weights1 = neural_net.getWIH().toArray();
-    for(int i = 0; i < weights1.length; i++) {
-      NN_writer.write((int)weights1[i]);
+    List<Double> weights1 = neural_net.getWIH().toArray();
+    for(int i = 0; i < weights1.size(); i++) {
+      NN_writer.write(weights1.get(i).toString());
       NN_writer.write(System.getProperty( "line.separator" ));
     }
     
     NN_writer.write(System.getProperty( "line.separator" ));
     
-    double[] weights2 = neural_net.getWHO().toArray();
-    for(int i = 0; i < weights2.length; i++) {
-      NN_writer.write((int)weights2[i]);
+    List<Double> weights2 = neural_net.getWHO().toArray();
+    for(int i = 0; i < weights2.size(); i++) {
+      NN_writer.write(weights2.get(i).toString());
       NN_writer.write(System.getProperty( "line.separator" ));
     }
     
     NN_writer.write(System.getProperty( "line.separator" ));
     
-    double[] weights3 = neural_net.getBH().toArray();
-    for(int i = 0; i < weights3.length; i++) {
-      NN_writer.write((int)weights3[i]);
+    List<Double> weights3 = neural_net.getBH().toArray();
+    for(int i = 0; i < weights3.size(); i++) {
+      NN_writer.write(weights3.get(i).toString());
       NN_writer.write(System.getProperty( "line.separator" ));
     }
     
     NN_writer.write(System.getProperty( "line.separator" ));
     
-    double[] weights4 = neural_net.getBO().toArray();
-    for(int i = 0; i < weights4.length; i++) {
-      NN_writer.write((int)weights4[i]);
+    List<Double> weights4 = neural_net.getBO().toArray();
+    for(int i = 0; i < weights4.size(); i++) {
+      NN_writer.write(weights4.get(i).toString());
       NN_writer.write(System.getProperty( "line.separator" ));
     }
     
@@ -245,7 +256,8 @@ public class FinalTrainingAI implements AIInterface{
     oppMotion = gameData.getMotionData(!playerNumber);
     
     mcts = new MCTS(gameData, playerNumber);
-    
+    oppTrainingExample = new LinkedList<TrainingExample>();
+    trainingExample = new LinkedList<TrainingExample>();
 
     return 0;
   }
@@ -260,16 +272,14 @@ public class FinalTrainingAI implements AIInterface{
     if(canProcessing()) {
     if(commandCenter.getSkillFlag()) {
      inputKey = commandCenter.getSkillKey();
-     System.out.println("processing");
        } else {
        inputKey.empty();
        commandCenter.skillCancel();
+       Node start = new Node(frameData, null, myActions, oppActions, gameData, true, commandCenter);
     oppTrainingExample.add(new TrainingExample(frameData));
-    Action currentAction = mcts.selectBestMove(frameData);
-    System.out.println(currentAction.name());
+    Action currentAction = mcts.selectBestMove(frameData, start);
     commandCenter.commandCall(currentAction.name());
     oppTrainingExample.getLast().setAction(oppCharacter.getAction());
-    System.out.println("processing");
        }
     
   }
@@ -278,20 +288,22 @@ public class FinalTrainingAI implements AIInterface{
   @Override
   public void roundEnd(int arg0, int arg1, int arg2) {
     LinkedList<TrainingExample> te = mcts.getTrainingExamples();
-    if(arg0 > arg1) {
-      for(int i = 0; i < te.size(); i++) {
-        te.get(i).setResult(1);
-        oppTrainingExample.get(i).setResult(-1);
+    if(te.size() != 0) {
+      if(arg0 > arg1) {
+        for(int i = 0; i < te.size(); i++) {
+          te.get(i).setResult(1);
+          oppTrainingExample.get(i).setResult(-1);
+        }
       }
-    }
-    else {
+      else {
+        for(int i = 0; i < te.size(); i++) {
+          te.get(i).setResult(-1);
+          oppTrainingExample.get(i).setResult(1);
+        }
+      }
       for(int i = 0; i < te.size(); i++) {
-        te.get(i).setResult(-1);
-        oppTrainingExample.get(i).setResult(1);
-    }
-    }
-    for(int i = 0; i < te.size(); i++) {
-      trainingExample.add(te.get(i));
+        trainingExample.add(te.get(i));
+      }
     }
   }
   

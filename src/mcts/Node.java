@@ -34,7 +34,6 @@ public class Node {
    int myOriginalHp;
 
    int oppOriginalHp;
-   int games = 1;
   
    Random rnd;
    int depth;
@@ -62,16 +61,16 @@ public class Node {
   public Node(FrameData frameData, Node parent, List<Action> myActions,
       List<Action> oppActions, GameData gameData, boolean playerNumber,
       CommandCenter commandCenter) {
+    this.state = new GameState(frameData, gameData);
     this.frameData = frameData;
-    this.state.setFD(frameData);
     this.parent = parent;
     this.myActions = myActions;
     this.oppActions = oppActions;
     this.gameData = gameData;
-    this.state.setGD(gameData);
     this.simulator = new Simulator(gameData);
     this.playerNumber = playerNumber;
     this.commandCenter = commandCenter;
+    this.children = new LinkedList<Node>();
 
     this.selectedMyActions = new ArrayList<Action>();
 
@@ -134,11 +133,19 @@ public class Node {
   public List<Action> getMySelectedActions(){
     return selectedMyActions;
   }
+  
+  public void setMyActions(LinkedList<Action> actions) {
+    myActions = actions;
+  }
+  
+  public void setOppActions(LinkedList<Action> actions) {
+    oppActions = actions;
+  }
+  
   public Node getRandomChild() {
     return children.get((int) Math.random() * children.size());
   }
   
-  // rework new version to use visitCount
   public Node findBestChildNode() {
     Node currentNode = children.get(0);
     double currentScore = currentNode.playout();
@@ -187,7 +194,7 @@ public class Node {
 
     for (int i = 0; i < children.size(); i++) {
 
-      double meanScore = children.get(i).getScore(children.get(i).frameData) / children.get(i).games;
+      double meanScore = children.get(i).getScore(children.get(i).frameData);
       if (bestScore < meanScore) {
         bestScore = meanScore;
         selected = i;

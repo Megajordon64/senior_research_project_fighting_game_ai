@@ -13,3 +13,32 @@ in a fighting game environment. Due to its size the program itself will not be a
 instead I will provide a link website for the program as well as links for other resources as they are used
 
 https://www.ice.ci.ritsumei.ac.jp/~ftgaic/index.htm
+
+How to use:
+requires the fightingICE software to be donwloaded (link provided above).
+The final Training AI folder which stores most of the contents for this project features the training AI which will output
+txt files in order to generate neural networks for other AI.
+ 
+following instructions presume you are using it via eclipse and that your copy of FightingICE is loaded into your eclipse
+workspace
+1. export FinalTrainingAI.java as a jar file and place it in the data/ai folder of FightingICE
+2. run FightingICE and select it as player 1 and choose whatever other AI you'd like it to train against as player 2
+3. start the match and wait for all of the rounds to end
+4. once all the rounds have completed a file named NN_setup will be present in your fightingICE folder, take it and
+rename it to either NN_setup1.txt, NN_setup2.txt, or NN_setup3.txt, the file should be readable by the project AI in its
+current position as long as it is in whatever folder your copy of FightingICE is in and not embedded in any other folders
+5. take one of the FinalAI folders (labelled as low, medium and hard, corresponding to 1, 2 and 3 respectively) and set it
+up as its own eclipse project (realistically this isn't necessary but it will help if you need to track of it without 
+digging through the FinalTrainingAI folder.
+6. make sure you select the Final AI folder that corresponds to the txt file you named earlier, if you'd prefer to rename it
+to something else each of the FinalAI have their file declaration on line 189 if you'd like to change it
+7. export the selected FinalAI java file to your fightingICE data/ai folder like with the final training AI
+8. run the new final AI as player 1 against any AI and see how it fares
+
+extra: due to the nature of the TrainingAI it may be beneficial to download the github repo for fightingICE so that you 
+can edit the game settings, mostly so that you can change the number of rounds to determine the number of matches rather than
+the play count option, as the latter doesn't work correctly with the training AI. you may also adjust the time limit using this
+you may edit the ROUND_FRAME_NUMBER variable to change the time limit (i don't know why changing the ROUND_TIME variable
+doesn't give the same effect, but it does let you go into negative time which does have some minor affect on the neural networks)
+
+ 

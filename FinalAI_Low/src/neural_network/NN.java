@@ -1,5 +1,6 @@
 package neural_network;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import enumerate.Action;
@@ -9,8 +10,48 @@ public class NN {
   Matrix weights_hidden_output; 
   Matrix bias_hidden; 
   Matrix bias_output;    
-  double learning_rate=0.05;
+  double learning_rate=0.1;
   Action bestAction;
+  
+  public NN(int input, int hidden, int output, Matrix wih, Matrix who, Matrix bh, Matrix bo) {
+    weights_input_hidden = new Matrix(hidden, input);
+    weights_hidden_output = new Matrix(output, hidden);
+    
+    bias_hidden = new Matrix(hidden, 1);
+    bias_output = new Matrix(output, 1);
+    
+    int k = 0;
+    for(int i = 0; i < weights_input_hidden.rows; i++) {
+      for(int j = 0; j < weights_input_hidden.cols; j++) {
+        weights_input_hidden.data[i][j] = wih.data[k][0];
+        k++;
+      }
+    }
+    
+    k = 0;
+    for(int i = 0; i < weights_hidden_output.rows; i++) {
+      for(int j = 0; j < weights_hidden_output.cols; j++) {
+        weights_hidden_output.data[i][j] = who.data[k][0];
+        k++;
+      }
+    }
+    
+    k = 0;
+    for(int i = 0; i < bias_hidden.rows; i++) {
+      for(int j = 0; j < bias_hidden.cols; j++) {
+        bias_hidden.data[i][j] = bh.data[k][0];
+        k++;
+      }
+    }
+    
+    k = 0;
+    for(int i = 0; i < bias_output.rows; i++) {
+      for(int j = 0; j < bias_output.cols; j++) {
+        bias_output.data[i][j] = bo.data[k][0];
+        k++;
+      }
+    }
+  }
   
   public NN(int input, int hidden, int output) {
     weights_input_hidden = new Matrix(hidden, input);
@@ -18,6 +59,12 @@ public class NN {
     
     bias_hidden = new Matrix(hidden, 1);
     bias_output = new Matrix(output, 1);
+  }
+  public NN(Matrix wih, Matrix wio, Matrix bh, Matrix bo) {
+    weights_input_hidden = wih;
+    weights_hidden_output = wio;
+    bias_hidden = bh;
+    bias_output = bo;
   }
   
   public Matrix getWIH() {
@@ -36,9 +83,9 @@ public class NN {
     return bias_output;
   }
   
-  public List<Double> predict(double[] x)
+  public List<Double> predict(double[] ds)
   {
-      Matrix input = Matrix.fromArray(x);
+      Matrix input = Matrix.fromArray(ds);
       Matrix hidden = Matrix.multiply(weights_input_hidden, input);
       hidden.add(bias_hidden);
       hidden.sigmoid();
@@ -50,7 +97,7 @@ public class NN {
       return output.toArray();
   }
   
-  public void train(double [] x, double [] y)
+  public void train(double[] x, double[] y)
   {
       Matrix input = Matrix.fromArray(x);
       Matrix hidden = Matrix.multiply(weights_input_hidden, input);
@@ -89,14 +136,14 @@ public class NN {
       
   }
   
-  public void fit(double[][] x, double[][] y, int epochs)
-  {
-      for(int i = 0; i < epochs; i++)
-      {    
-          int sampleN =  (int)(Math.random() * x.length );
-          this.train(x[sampleN], y[sampleN]);
-      }
-  }
+  //public void fit(double[][] x, double[][] y, int epochs)
+  //{
+  //    for(int i = 0; i < epochs; i++)
+  //    {    
+  //        int sampleN =  (int)(Math.random() * x.length );
+  //        this.train(x[sampleN].Arrays.asList(), y[sampleN]).asList();
+  //    }
+  //}
   
   public Action returnBestAction() {
     return bestAction; 

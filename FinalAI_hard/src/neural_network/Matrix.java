@@ -1,6 +1,7 @@
 package neural_network;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Matrix {
@@ -33,6 +34,7 @@ public class Matrix {
   public void add(Matrix mat) {
     if(rows != mat.rows || cols != mat.cols) {
       System.out.println("matrix sizes are not the same and cannot be added");
+      return;
     }
     for(int i = 0; i < rows; i++) {
       for(int j = 0; j < cols; j++) {
@@ -128,11 +130,11 @@ public class Matrix {
     
   }
   
-  public static Matrix fromArray(double[] source)
+  public static Matrix fromArray(double[] ds)
   {
-      Matrix newMatrix = new Matrix(source.length,1);
-      for(int i = 0; i < source.length; i++)
-          newMatrix.data[i][0] = source[i];
+      Matrix newMatrix = new Matrix(ds.length,1);
+      for(int i = 0; i < ds.length; i++)
+          newMatrix.data[i][0] = ds[i];
       return newMatrix;
       
   }

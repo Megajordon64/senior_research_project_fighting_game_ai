@@ -1,5 +1,6 @@
 package mcts;
 // code for mcts package referenced from:
+
 // https://www.baeldung.com/java-monte-carlo-tree-search
 // https://github.com/eugenp/tutorials/tree/master/algorithms-searching/src/main/java/com/baeldung/algorithms/mcts
 // https://www.ice.ci.ritsumei.ac.jp/~ftgaic/index-2h.html
@@ -32,7 +33,6 @@ public class MCTS {
 
   /** Main FrameData */
   public LinkedList<TrainingExample> trainingExample;
-  public LinkedList<TrainingExample> oppTrainingExample;
   
   public int listTracker = 0;
   private FrameData frameData;
@@ -103,7 +103,7 @@ public class MCTS {
 
     myMotion = gameData.getMotionData(this.playerNumber);
     oppMotion = gameData.getMotionData(!this.playerNumber);
-    
+    trainingExample = new LinkedList<TrainingExample>();
     numExpansions = 1;
 
   }
@@ -118,39 +118,34 @@ public class MCTS {
   
   // this method will later be updated to return the game state returned by various functions found within
   // fightingICE, for right now it will just return the prototype value for testing purposes
-  public Action selectBestMove(FrameData fd) {
+  public Action selectBestMove(FrameData fd, Node start) {
     trainingExample.clear();
+    mctsPrepare();
+    start.setMyActions(myActions);
+    start.setOppActions(oppActions);
     long timeLimit = System.currentTimeMillis() + timer;
-    if (tree == null) {
       tree = new Tree(start);
-    }
-    if (rootNode.getGameState().getFD() != fd) {
-      tree = new Tree(start);
+      rootNode = tree.Root;
       rootNode.setGameState(new GameState(fd, gameData));
-    }
     
     int j = 0;
     while (System.currentTimeMillis() < timeLimit && j < numExpansions) {
       
-      Node selectedNode = selectNode(tree.getRoot());
+      Node selectedNode = selectNode(rootNode);
       
       expandNode(selectedNode);
       
+      double result = simulateRandomState(selectedNode);
       
-      Node simNode = selectedNode;
-      
-      double result = simulateRandomState(simNode);
-      
-      backProp(simNode, result);
+      backProp(selectedNode, result);
       j++;
       
     }
     
     Node Selection = tree.getRoot();
-    Node finalSelection = Selection.findBestChildNode();
     trainingExample.add(new TrainingExample(frameData));
-    trainingExample.getLast().setAction(finalSelection.getBestScoreAction());
-    return finalSelection.getBestScoreAction();
+    trainingExample.getLast().setAction(Selection.getBestScoreAction());
+    return Selection.getBestScoreAction();
   }
   
   public Node selectNodeVer2(Node start) {
@@ -188,7 +183,6 @@ public class MCTS {
       Node leafNode = new Node(node.frameData, node, node.myActions, node.oppActions, 
           node.gameData, node.playerNumber, node.commandCenter, my);
       node.children.add(leafNode);
-      leafNode.setParentNode(node);
     }
   }
   
@@ -226,27 +220,7 @@ public class MCTS {
 
 
   
-  public void mctsProcess() {
-    if (canProcessing()) {
-      if (commandCenter.getSkillFlag()) {
-        key = commandCenter.getSkillKey();
-      } else {
-        key.empty();
-        commandCenter.skillCancel();
 
-        mctsPrepare(); 
-        rootNode = new Node(simulatorAheadFrameData, null, myActions, oppActions, gameData, playerNumber,
-            commandCenter);
-        start = rootNode;
-        expandNode(start);
-
-        Action bestAction = selectBestMove(start.getGameState().getFD()); 
-
-        commandCenter.commandCall(bestAction.name()); 
-      }
-    }
-    
-  }
   
   public boolean canProcessing() {
     return !frameData.getEmptyFlag() && frameData.getRemainingFramesNumber() > 0;
@@ -266,7 +240,6 @@ public class MCTS {
     myActions.clear();
 
     int energy = myCharacter.getEnergy();
-
     if (myCharacter.getState() == State.AIR) {
       for (int i = 0; i < actionAir.length; i++) {
         if (Math.abs(myMotion.get(Action.valueOf(actionAir[i].name()).ordinal())
@@ -321,7 +294,4 @@ public class MCTS {
     return trainingExample;
   }
   
-  public LinkedList<TrainingExample> getOppTrainingExamples(){
-    return oppTrainingExample;
-  }
 }
